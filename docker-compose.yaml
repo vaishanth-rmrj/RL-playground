@@ -1,0 +1,24 @@
+services:
+  rl-playground:
+    image: pytorch/pytorch:2.6.0-cuda12.4-cudnn9-runtime # stablebaselines/stable-baselines3
+    container_name: cont-rl-playground
+    runtime: nvidia
+    network_mode: "host"
+    shm_size: '8g'
+    volumes:
+      - ../RL-playground:/root/RL-playground:z
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ~/.Xauthority:/root/.Xauthority     
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+              count: all
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=0
+      - GPU_TYPE=nvidia
+      - DISPLAY=${DISPLAY}
+      - XAUTHORITY=/root/.Xauthority 
+    command: tail -f /dev/null
